@@ -9,14 +9,19 @@ Description: >
 Globals:
   Function:
     Timeout: 3
+    Runtime: nodejs24.x
+    CodeUri: todos/
+    Environment:
+      Variables:
+        TODO_TABLE: todo
 
 Resources:
   HelloWorldFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
-      CodeUri: hello-world/
-      Handler: app.lambdaHandler
-      Runtime: nodejs24.x
+#      CodeUri: todos/
+      Handler: helloworld.lambdaHandler
+#      Runtime: nodejs24.x
       Architectures:
         - x86_64
       Events:
@@ -24,6 +29,23 @@ Resources:
           Type: HttpApi # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
           Properties:
             Path: /hello
+            Method: get
+  ListTodosFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+#      CodeUri: todos/
+      Handler: listTodos.handler
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: todo
+#      Runtime: nodejs24.x
+      Architectures:
+        - x86_64
+      Events:
+        ListTodos:
+          Type: HttpApi # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /todos
             Method: get
 
 Outputs:

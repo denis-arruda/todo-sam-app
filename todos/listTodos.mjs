@@ -10,7 +10,7 @@ export const handler = async (event) => {
   const input = {
     FilterExpression: "username = :value",
     ExpressionAttributeValues: { ":value": { S: "in28minutes" } },
-    TableName: "todo"
+    TableName: process.env.TODO_TABLE
   };
 
   const command = new ScanCommand(input);
