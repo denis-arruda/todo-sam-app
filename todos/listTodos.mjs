@@ -17,6 +17,7 @@ export const handler = async (event) => {
   const results = await client.send(command);
   const headers = {
     "Access-Control-Allow-Origin": "*", // Required for CORS support to work
+    "Content-Type": "application/json"
   }
   
   const response = {
