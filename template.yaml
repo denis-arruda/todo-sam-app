@@ -31,22 +31,50 @@ Resources:
             Path: /hello
             Method: get
   ListTodosFunction:
-    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Type: AWS::Serverless::Function
     Properties:
-#      CodeUri: todos/
       Handler: listTodos.handler
       Policies:
         - DynamoDBReadPolicy:
             TableName: todo
-#      Runtime: nodejs24.x
       Architectures:
         - x86_64
       Events:
         ListTodos:
-          Type: HttpApi # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Type: HttpApi
           Properties:
             Path: /todos
             Method: get
+  GetTodoFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: getTodo.handler
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: todo
+      Architectures:
+        - x86_64
+      Events:
+        GetTodos:
+          Type: HttpApi
+          Properties:
+            Path: /todos/{id}
+            Method: get
+  UpdateTodoFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: updateTodo.handler
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: todo
+      Architectures:
+        - x86_64
+      Events:
+        UpdateTodo:
+          Type: HttpApi
+          Properties:
+            Path: /todos/{id}
+            Method: put
 
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
@@ -56,6 +84,9 @@ Outputs:
     Description: "API Gateway endpoint URL for Prod stage for Hello World function"
     #Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/Prod/hello/"
     Value: !Sub "https://${ServerlessHttpApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/hello"
+  ListTodosApi:
+    Description: "API Gateway endpoint URL for Prod stage for List Todos function"
+    Value: !Sub "https://${ServerlessHttpApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/todos"
   HelloWorldFunction:
     Description: "Hello World Lambda Function ARN"
     Value: !GetAtt HelloWorldFunction.Arn
